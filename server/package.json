@@ -1,7 +1,7 @@
 {
   "name": "ytpm-server",
   "version": "1.0.0",
-  "description": "YouTube playlist manager server",
+  "description": "ytpm-server",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/pviarkhouski/ytpm#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "@googleapis/youtube": "^2.0.0",
+    "express": "^4.17.1",
+    "google-auth-library": "^7.10.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
