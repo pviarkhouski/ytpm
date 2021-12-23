@@ -31,11 +31,14 @@ class AuthService {
     return this.oAuth2Client.generateAuthUrl(AUTH_URL_CONFIG);
   }
 
-  async setCredentials(code) {
-    // Now that we have the code, use that to acquire tokens.
+  async getTokens(code) {
     const r = await this.oAuth2Client.getToken(code);
-    this.#accessToken = r.tokens.access_token;
-    this.oAuth2Client.setCredentials(r.tokens);
+    return r.tokens;
+  }
+
+  setCredentials(tokens) {
+    this.#accessToken = tokens.access_token;
+    this.oAuth2Client.setCredentials(tokens);
   }
 
   getAccessToken() {
