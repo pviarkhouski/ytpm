@@ -1,18 +1,19 @@
 const authService = require('../auth/auth.service');
 
 class PlaylistItemsService {
-  async getList(playlistId) {
+  async getList(playlistId, limit, pageToken) {
     let res;
     try {
       res = await authService.getYoutubeApi().playlistItems.list({
         part: ['snippet'],
-        maxResults: 25,
-        playlistId: playlistId
+        maxResults: limit,
+        playlistId: playlistId,
+        ...(pageToken && { pageToken })
       });
     } catch (e) {
       throw new Error(`Failed to get playlistItems. Error: ${e.message}`);
     }
-    return res.data.items;
+    return res.data;
   }
 
   async insert(playlistId, position, videoId) {

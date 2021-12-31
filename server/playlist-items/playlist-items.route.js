@@ -2,27 +2,32 @@ const express = require('express');
 const service = require('./playlist-items.service');
 const router = express.Router();
 
+const DEFAULT_LIMIT = 25;
+const DEFAULT_ITEM_POSITION = 0;
+
 router.get('/', async (req, res) => {
-  const playlistId = req.query['playlistId'];
+  let { playlistId, limit, pageToken } = req.query;
+
   if (!playlistId) {
     res.status(400).send();
     return;
   }
 
-  let playlistItems = [];
+  limit = limit ? parseInt(limit) : DEFAULT_LIMIT;
+
+  let response;
   try {
-    playlistItems = await service.getList(playlistId);
+    response = await service.getList(playlistId, limit, pageToken);
   } catch (e) {
     res.status(500).json({ error: e.message });
     return;
   }
-  res.json(playlistItems);
+  res.json(response);
 });
 
 router.post('/', async (req, res) => {
-  const playlistId = req.body['playlistId'];
-  const position = req.body['position'] || 0;
-  const videoId = req.body['videoId'];
+  let { playlistId, position, videoId } = req.body;
+  position = position ? parseInt(position) : DEFAULT_ITEM_POSITION;
 
   if (!playlistId || !videoId) {
     res.status(400).send();
@@ -40,10 +45,8 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  const playlistItemId = req.body['playlistItemId'];
-  const playlistId = req.body['playlistId'];
-  const position = req.body['position'] || 0;
-  const videoId = req.body['videoId'];
+  let { playlistItemId, playlistId, position, videoId } = req.body;
+  position = position ? parseInt(position) : DEFAULT_ITEM_POSITION;
 
   if (!playlistItemId || !playlistId || !videoId) {
     res.status(400).send();
@@ -61,7 +64,7 @@ router.put('/', async (req, res) => {
 });
 
 router.delete('/', async (req, res) => {
-  const playlistItemId = req.query['playlistItemId'];
+  const { playlistItemId } = req.query;
 
   if (!playlistItemId) {
     res.status(400).send();

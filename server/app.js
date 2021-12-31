@@ -25,7 +25,7 @@ app.get('/', async (req, res) => {
     res.redirect('/auth');
     return;
   }
-  res.send('Signed In');
+  res.send(`Signed In: ${authService.getAccessToken()}`);
 });
 
 app.listen(port, () => {

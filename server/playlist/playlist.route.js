@@ -2,19 +2,24 @@ const express = require('express');
 const service = require('./playlist.service');
 const router = express.Router();
 
+const DEFAULT_LIMIT = 25;
+
 router.get('/', async (req, res) => {
-  let playlists = [];
+  let response;
+  let { limit, pageToken } = req.query;
+  limit = limit ? parseInt(limit) : DEFAULT_LIMIT;
+
   try {
-    playlists = await service.getList();
+    response = await service.getList(limit, pageToken);
   } catch (e) {
-    res.status(500).json({error: e.message});
+    res.status(500).json({ error: e.message });
     return;
   }
-  res.json(playlists);
+  res.json(response);
 });
 
 router.post('/', async (req, res) => {
-  const title = req.body['title'];
+  const { title } = req.body;
 
   if (!title) {
     res.status(400).send();
@@ -32,8 +37,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  const id = req.body['id'];
-  const title = req.body['title'];
+  const { id, title } = req.body;
 
   if (!id || !title) {
     res.status(400).send();
@@ -51,7 +55,7 @@ router.put('/', async (req, res) => {
 });
 
 router.delete('/', async (req, res) => {
-  const id = req.query['id'];
+  const { id } = req.query;
 
   if (!id) {
     res.status(400).send();
